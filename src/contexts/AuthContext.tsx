@@ -144,7 +144,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       setUser(firebaseUser);
-      setUserProfile(null);
+      // Keep the existing profile visible while the fresh one loads — avoids
+      // a blank-name flash on page reload / tab re-focus for returning users.
 
       try {
         const profile = await ensureUserProfile(firebaseUser);
