@@ -4,6 +4,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -189,6 +190,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             }}
           />
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
