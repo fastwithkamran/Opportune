@@ -68,10 +68,26 @@ export const metadata: Metadata = {
   verification: {
     google: "VNPyY13oobL3dsGPU06R_aUy4g6iNIvZr-S6qM9tPcg",
   },
+  // PWA: icons for browser tab, bookmark, and iOS home screen
   icons: {
-    icon: "/logo_bg.png",
-    apple: "/logo_bg.png",
+    icon: [
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/icons/icon-192x192.png",
   },
+  // PWA: tells iOS Safari this can be used as a full-screen home screen app
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Opportune",
+  },
+  // Manifest is automatically linked by Next.js via src/app/manifest.ts
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "Opportune",
     description:
@@ -127,6 +143,9 @@ const toastError: CSSProperties = {
  */
 const THEME_INIT_SCRIPT = `(function(){var d=document.documentElement;function sync(){var dark=d.dataset.theme!=='light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',dark?'#060b18':'#f0f4f8');}try{if(localStorage.getItem('opportune-theme')==='dark'){delete d.dataset.theme;}else{d.dataset.theme='light';}}catch(e){}try{new MutationObserver(sync).observe(d,{attributes:true,attributeFilter:['data-theme']});}catch(e){}document.addEventListener('DOMContentLoaded',sync);sync();})();`;
 
+/** Registers the PWA Service Worker (offline caching + install eligibility). */
+const SW_REGISTER_SCRIPT = `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(e){console.warn('[SW] Registration failed:',e);});});}`;
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     // suppressHydrationWarning: the inline script sets data-theme on <html>
@@ -137,6 +156,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html: THEME_INIT_SCRIPT,
+          }}
+        />
+        {/* PWA: register service worker for offline caching and install eligibility */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: SW_REGISTER_SCRIPT,
           }}
         />
       </head>
