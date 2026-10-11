@@ -22,7 +22,7 @@ import {
   FiSmartphone,
   FiMessageCircle,
   FiExternalLink,
-  FiZap,
+  FiUsers,
 } from "react-icons/fi";
 import {
   HiOutlineSparkles,
@@ -127,20 +127,6 @@ function AboutOpportuneCard() {
             >
               What is Opportune?
             </h2>
-            <span
-              style={{
-                background: "rgba(16,185,129,0.15)",
-                color: "var(--primary-400)",
-                fontSize: 10,
-                fontWeight: 700,
-                padding: "2px 8px",
-                borderRadius: 999,
-                border: "1px solid rgba(16,185,129,0.25)",
-                letterSpacing: "0.02em",
-              }}
-            >
-              FREE FOR STUDENTS
-            </span>
           </div>
           <p
             style={{
@@ -297,7 +283,8 @@ function AboutOpportuneCard() {
 // ─── Quick Channels & Preferences Card ────────────────────────────────────────
 
 /** WhatsApp channel link — update WHATSAPP_CHANNEL_URL with your real channel. */
-const WHATSAPP_CHANNEL_URL = "https://whatsapp.com/channel/opportune";
+const WHATSAPP_CHANNEL_URL =
+  "https://whatsapp.com/channel/0029VbEoEDQC6ZvbEuBdbC2o";
 
 type PushPermission = "default" | "granted" | "denied" | "unsupported";
 
@@ -365,9 +352,6 @@ function QuickChannelsCard() {
             gap: 7,
           }}
         >
-          <FiZap
-            style={{ width: 14, height: 14, color: "var(--primary-400)" }}
-          />
           Quick Channels &amp; Preferences
         </h2>
         <p
@@ -943,6 +927,17 @@ export default function UpdatesPage() {
   // "Open Global Feed" link + button) could otherwise fire duplicate writes.
   const inFlightRef = useRef<Set<string>>(new Set());
   const [, setTick] = useState(0);
+  // Tab switcher: "hub" (Community Hub) is shown by default; "activity" shows notifications.
+  const [activeTab, setActiveTab] = useState<"hub" | "activity">("hub");
+
+  // Auto-switch to Activity tab when user arrives via a direct ?tab=activity link
+  // (e.g. tapping the unread badge notification link in the future).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab") === "activity") {
+      queueMicrotask(() => setActiveTab("activity"));
+    }
+  }, []);
 
   useEffect(() => {
     if (!uid) return;
@@ -1134,62 +1129,144 @@ export default function UpdatesPage() {
           Updates & Hub
         </h1>
         <p className="m-0 text-[13px] text-[var(--text-tertiary)]">
-          Your activity updates, platform info, and quick actions
+          Platform info, quick actions, and your activity alerts
         </p>
       </header>
 
-      {/* ── Hub Cards ── */}
-      <AboutOpportuneCard />
-      <QuickChannelsCard />
-      <InstallAppCard />
-
-      {/* ── Activity Notifications Section ── */}
-      <section aria-labelledby="activity-heading">
-        <div
-          className="flex items-center justify-between gap-4 mb-3"
-          style={{ flexWrap: "wrap" }}
-        >
-          <div>
-            <h2
-              id="activity-heading"
+      {/* ── Tab Switcher Pill ── */}
+      <div
+        role="tablist"
+        aria-label="Updates sections"
+        style={{
+          display: "flex",
+          gap: 6,
+          marginBottom: 20,
+          background: "var(--bg-input)",
+          borderRadius: "var(--radius-lg)",
+          padding: 4,
+        }}
+      >
+        {(["hub", "activity"] as const).map((tab) => {
+          const isActive = activeTab === tab;
+          const label = tab === "hub" ? "Community Hub" : "Activity";
+          const badge = tab === "activity" && unreadCount > 0 ? unreadCount : 0;
+          return (
+            <button
+              key={tab}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveTab(tab)}
               style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: 15,
-                fontWeight: 700,
-                margin: 0,
-                color: "var(--text-primary)",
+                flex: 1,
+                padding: "7px 12px",
+                borderRadius: "var(--radius-md)",
+                border: "none",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: isActive ? 700 : 500,
+                color: isActive ? "#fff" : "var(--text-secondary)",
+                background: isActive
+                  ? "var(--gradient-primary)"
+                  : "transparent",
+                transition: "all .15s",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                boxShadow: isActive
+                  ? "0 2px 8px rgba(16,185,129,0.25)"
+                  : "none",
               }}
             >
-              Activity
-            </h2>
-            <p
-              className="m-0 text-[12px] text-[var(--text-tertiary)]"
-              aria-live="polite"
-            >
-              {statusText}
-            </p>
-          </div>
-          {!loading && !listenerError && !signedOut && unreadCount > 0 && (
-            <button
-              type="button"
-              className="btn btn-outline btn-sm shrink-0"
-              onClick={handleMarkAll}
-              disabled={markingAll}
-              title="Marks all of your notifications as read, including ones older than the 30 shown here"
-            >
-              {markingAll ? "Updating…" : "Mark all read"}
+              {tab === "hub" ? (
+                <FiUsers style={{ width: 14, height: 14 }} />
+              ) : (
+                <FiBell style={{ width: 13, height: 13 }} />
+              )}
+              {label}
+              {badge > 0 && (
+                <span
+                  style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : "#ef4444",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    minWidth: 18,
+                    height: 18,
+                    borderRadius: 999,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 5px",
+                  }}
+                >
+                  {badge > 99 ? "99+" : badge}
+                </span>
+              )}
             </button>
-          )}
-        </div>
+          );
+        })}
+      </div>
 
-        <div
-          aria-label="Activity updates"
-          aria-busy={loading}
-          className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-primary)] bg-[var(--bg-card)]"
-        >
-          {notifBody}
-        </div>
-      </section>
+      {/* ── Community Hub Tab ── */}
+      {activeTab === "hub" && (
+        <section aria-label="Community Hub">
+          <AboutOpportuneCard />
+          <QuickChannelsCard />
+          <InstallAppCard />
+        </section>
+      )}
+
+      {/* ── Activity Tab ── */}
+      {activeTab === "activity" && (
+        <section aria-labelledby="activity-heading">
+          <div
+            className="flex items-center justify-between gap-4 mb-3"
+            style={{ flexWrap: "wrap" }}
+          >
+            <div>
+              <h2
+                id="activity-heading"
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  margin: 0,
+                  color: "var(--text-primary)",
+                }}
+              >
+                Activity
+              </h2>
+              <p
+                className="m-0 text-[12px] text-[var(--text-tertiary)]"
+                aria-live="polite"
+              >
+                {statusText}
+              </p>
+            </div>
+            {!loading && !listenerError && !signedOut && unreadCount > 0 && (
+              <button
+                type="button"
+                className="btn btn-outline btn-sm shrink-0"
+                onClick={handleMarkAll}
+                disabled={markingAll}
+                title="Marks all of your notifications as read, including ones older than the 30 shown here"
+              >
+                {markingAll ? "Updating…" : "Mark all read"}
+              </button>
+            )}
+          </div>
+
+          <div
+            aria-label="Activity updates"
+            aria-busy={loading}
+            className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-primary)] bg-[var(--bg-card)]"
+          >
+            {notifBody}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
