@@ -42,8 +42,8 @@ const NAV_ITEMS = [
     section: "Account",
     items: [
       {
-        label: "Notifications",
-        href: "/notifications",
+        label: "Updates",
+        href: "/updates",
         icon: FiBell,
         dynamic: "unread" as const,
       },
@@ -186,8 +186,8 @@ export default function AdminLayout({
     { label: "Society", href: "/my-society", icon: HiOutlineBuildingLibrary },
     { label: "AI", href: "/ai", icon: HiOutlineSparkles },
     {
-      label: "Alerts",
-      href: "/notifications",
+      label: "Updates",
+      href: "/updates",
       icon: FiBell,
       badge: unreadCount,
     },

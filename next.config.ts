@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     return [
       // Root redirects to the global feed
       { source: "/", destination: "/feed", permanent: false },
+      // Legacy notifications route redirected to updates hub
+      { source: "/notifications", destination: "/updates", permanent: true },
     ];
   },
 

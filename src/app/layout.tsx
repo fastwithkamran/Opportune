@@ -95,13 +95,13 @@ export const metadata: Metadata = {
     siteName: "Opportune",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/logo_bg.png", alt: "Opportune" }],
+    images: [{ url: "/banner.jpg", alt: "Opportune" }],
   },
   twitter: {
     card: "summary",
     title: "Opportune",
     description: DESCRIPTION,
-    images: ["/logo_bg.png"],
+    images: ["/banner.jpg"],
   },
 };
 

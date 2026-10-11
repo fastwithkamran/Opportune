@@ -174,7 +174,7 @@ Opportune/
 │   │   │   │   │   ├── SocietyHeader.tsx
 │   │   │   │   │   └── SocietyPostCard.tsx
 │   │   │   │   └── page.tsx
-│   │   │   ├── notifications/
+│   │   │   ├── updates/
 │   │   │   │   └── page.tsx
 │   │   │   ├── settings/
 │   │   │   │   ├── _components/
