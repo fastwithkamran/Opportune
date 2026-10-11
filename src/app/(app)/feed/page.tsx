@@ -86,6 +86,7 @@ export default function GlobalFeedPage() {
   const followingUidRef = useRef<string | null>(null);
   // Search + type filter
   const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<PostType | "all">("all");
 
   // Pending new-post badge counts — updated inside subscription callbacks (not during render).
@@ -280,67 +281,117 @@ export default function GlobalFeedPage() {
 
   return (
     <>
-      {/* ── Header ── */}
-      <div style={{ padding: "var(--page-padding-y) var(--page-padding-x) 0" }}>
+      {/* ── Header: compact single-row ── */}
+      <div
+        style={{
+          padding: "var(--page-padding-y) var(--page-padding-x) 0",
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
+          background: "var(--bg-primary)",
+          borderBottom: "1px solid var(--border-secondary)",
+        }}
+      >
+        {/* Title row */}
         <div
           style={{
             display: "flex",
+            alignItems: "center",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 16,
-            gap: 12,
-            flexWrap: "wrap",
+            height: 44,
+            marginBottom: searchOpen ? 8 : 0,
           }}
         >
-          <div>
+          {/* Left: title + super admin badge */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              minWidth: 0,
+              flex: 1,
+            }}
+          >
+            <FiGlobe
+              style={{
+                width: 16,
+                height: 16,
+                color: "var(--primary-400)",
+                flexShrink: 0,
+              }}
+            />
             <h1
               style={{
                 fontFamily: "var(--font-heading)",
-                fontSize: 22,
-                fontWeight: 800,
-                marginBottom: 4,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
+                fontSize: 15.5,
+                fontWeight: 650,
+                color: "var(--text-primary)",
+                letterSpacing: "-0.01em",
+                margin: 0,
+                lineHeight: 1.25,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              <FiGlobe className="text-[var(--primary-400)]" /> Global
-              Opportunity Feed
+              Ditch the noise. Lock in and build your future!
             </h1>
-            <p
-              style={{
-                color: "var(--text-tertiary)",
-                fontSize: 13,
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: 6,
-              }}
-            >
-              Discover posts from institutes around the world
-              {isSuperAdmin && (
-                <span
-                  style={{
-                    background: "rgba(239,68,68,0.1)",
-                    border: "1px solid rgba(239,68,68,0.25)",
-                    color: "#ef4444",
-                    padding: "2px 10px",
-                    borderRadius: 999,
-                    fontSize: 11,
-                    fontWeight: 600,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                >
-                  <FiZap className="text-[10px]" /> Super Admin Mode
-                </span>
-              )}
-            </p>
+            {isSuperAdmin && (
+              <span
+                style={{
+                  background: "rgba(239,68,68,0.1)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  color: "#ef4444",
+                  padding: "2px 8px",
+                  borderRadius: 999,
+                  fontSize: 10,
+                  fontWeight: 600,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  flexShrink: 0,
+                }}
+              >
+                <FiZap style={{ width: 10, height: 10 }} /> Admin
+              </span>
+            )}
           </div>
 
-          {/* Search bar */}
-          <div style={{ position: "relative", minWidth: 220 }}>
+          {/* Right: search icon / close toggle */}
+          <button
+            type="button"
+            aria-label={searchOpen ? "Close search" : "Search feed"}
+            onClick={() => {
+              setSearchOpen((v) => !v);
+              if (searchOpen) setSearch("");
+            }}
+            style={{
+              background: searchOpen ? "var(--bg-input)" : "transparent",
+              border: "1px solid",
+              borderColor: searchOpen ? "var(--border-primary)" : "transparent",
+              borderRadius: "var(--radius-md)",
+              color: searchOpen ? "var(--primary-400)" : "var(--text-tertiary)",
+              width: 34,
+              height: 34,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all .15s",
+              flexShrink: 0,
+            }}
+          >
+            {searchOpen ? (
+              <FiX style={{ width: 15, height: 15 }} />
+            ) : (
+              <FiSearch style={{ width: 15, height: 15 }} />
+            )}
+          </button>
+        </div>
+
+        {/* Expandable inline search input */}
+        {searchOpen && (
+          <div style={{ position: "relative", marginBottom: 8 }}>
             <label className="sr-only" htmlFor="feed-search">
               Search feed posts
             </label>
@@ -362,8 +413,9 @@ export default function GlobalFeedPage() {
             <input
               id="feed-search"
               className="input"
-              placeholder="Search posts or institutes…"
+              placeholder="Search posts or societies…"
               value={search}
+              autoFocus
               onChange={(event) => setSearch(event.target.value)}
               style={{ paddingLeft: 32, fontSize: 13, width: "100%" }}
             />
@@ -391,9 +443,9 @@ export default function GlobalFeedPage() {
               </button>
             )}
           </div>
-        </div>
+        )}
 
-        {/* Tabs */}
+        {/* Tabs: All Posts / Following */}
         <div
           style={{
             display: "flex",
@@ -409,7 +461,7 @@ export default function GlobalFeedPage() {
               onClick={() => setTab(feedTab)}
               className="feed-tab-button"
               style={{
-                fontWeight: 500,
+                fontWeight: tab === feedTab ? 600 : 450,
                 color:
                   tab === feedTab
                     ? "var(--primary-400)"
@@ -425,15 +477,7 @@ export default function GlobalFeedPage() {
                 gap: 6,
               }}
             >
-              {feedTab === "all" ? (
-                <>
-                  <FiGlobe style={{ width: 14, height: 14 }} /> All Posts
-                </>
-              ) : (
-                <>
-                  <FiBell style={{ width: 14, height: 14 }} /> Following
-                </>
-              )}
+              {feedTab === "all" ? "All Posts" : "Following"}
               {feedTab === "following" && followedIds.size > 0 && (
                 <span
                   style={{
@@ -483,8 +527,10 @@ export default function GlobalFeedPage() {
           className="feed-type-filters"
           style={{
             gap: 6,
-            flexWrap: "wrap",
-            padding: "12px 0 4px",
+            flexWrap: "nowrap",
+            overflowX: "auto",
+            padding: "8px 0 6px",
+            scrollbarWidth: "none",
           }}
         >
           {TYPE_FILTERS.map(({ value, label, icon: FilterIcon }) => {
@@ -564,7 +610,7 @@ export default function GlobalFeedPage() {
       {/* ── Content ── */}
       <div
         style={{
-          padding: "16px var(--page-padding-x)",
+          padding: "12px var(--page-padding-x)",
           flex: 1,
           overflowY: "auto",
         }}
