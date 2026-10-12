@@ -67,7 +67,10 @@ self.addEventListener("fetch", (event) => {
       caches.open(CACHE_NAME).then(async (cache) => {
         const cached = await cache.match(request);
         const networkFetch = fetch(request).then((response) => {
-          if (response.ok) cache.put(request, response.clone());
+          if (response.ok) {
+            const copy = response.clone();
+            cache.put(request, copy).catch(() => {});
+          }
           return response;
         });
         return cached ?? networkFetch;
@@ -81,8 +84,13 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          if (response.ok) {
+            const copy = response.clone();
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(request, copy))
+              .catch(() => {});
+          }
           return response;
         })
         .catch(() => caches.match(request)),
@@ -97,9 +105,11 @@ self.addEventListener("fetch", (event) => {
         cached ??
         fetch(request).then((response) => {
           if (response.ok) {
+            const copy = response.clone();
             caches
               .open(CACHE_NAME)
-              .then((cache) => cache.put(request, response.clone()));
+              .then((cache) => cache.put(request, copy))
+              .catch(() => {});
           }
           return response;
         }),
