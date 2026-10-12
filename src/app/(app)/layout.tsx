@@ -20,6 +20,7 @@ import {
   FiMoon,
   FiLogOut,
   FiZap,
+  FiUsers,
 } from "react-icons/fi";
 import { HiOutlineBuildingLibrary, HiOutlineSparkles } from "react-icons/hi2";
 
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
     section: "Community",
     items: [
       { label: "Pages", href: "/my-page", icon: HiOutlineBuildingLibrary },
+      { label: "Teammates", href: "/teammates", icon: FiUsers },
       {
         label: "Updates",
         href: "/updates",
@@ -191,7 +193,7 @@ export default function AdminLayout({
       icon: FiBell,
       badge: unreadCount,
     },
-    { label: "Profile", href: "/settings", icon: FiSettings },
+    { label: "Teammates", href: "/teammates", icon: FiUsers },
   ];
 
   return (
@@ -272,7 +274,7 @@ export default function AdminLayout({
               <FiMoon className="w-4 h-4 text-black" />
             )}
           </button>
-          {!user && (
+          {!user ? (
             <button
               type="button"
               onClick={handleGuestSignIn}
@@ -290,6 +292,24 @@ export default function AdminLayout({
             >
               Sign In
             </button>
+          ) : (
+            <Link
+              href="/settings"
+              aria-label="Settings"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "var(--bg-input)",
+                border: "1px solid var(--border-primary)",
+                color: "var(--text-secondary)",
+              }}
+            >
+              <FiSettings style={{ width: 16, height: 16 }} />
+            </Link>
           )}
         </div>
       </header>
