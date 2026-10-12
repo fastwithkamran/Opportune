@@ -115,7 +115,7 @@ function MetadataItem({
       </span>
       <span
         className="min-w-0 break-words text-xs leading-normal"
-        style={{ fontWeight: emphasized ? 700 : 500 }}
+        style={{ fontWeight: emphasized ? 600 : 450 }}
       >
         {children}
       </span>
@@ -155,10 +155,11 @@ export function OpportunityCard({
   return (
     <section
       aria-label={`${type.charAt(0).toUpperCase()}${type.slice(1)} details`}
-      className="mt-3 flex w-full min-w-0 flex-col gap-3 rounded-2xl p-4 sm:p-5"
+      className="mt-3 flex w-full min-w-0 flex-col gap-3 rounded-xl p-3.5 sm:p-4"
       style={{
-        background: TYPE_COLORS[type],
-        border: `1px solid ${color}35`,
+        background: "var(--bg-input)",
+        border: "1px solid var(--border-primary)",
+        borderLeft: `3.5px solid ${color}`,
       }}
     >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -217,17 +218,17 @@ export function OpportunityCard({
 
       {skills.length > 0 && (
         <ul
-          className="m-0 flex list-none flex-wrap gap-2 p-0"
+          className="m-0 flex list-none flex-wrap gap-1.5 p-0"
           aria-label={type === "event" ? "Topics" : "Skills and topics"}
         >
           {skills.map((skill) => (
             <li
               key={skill.toLowerCase()}
-              className="rounded-full px-3 py-1 text-[11px] sm:text-xs font-medium leading-normal break-words"
+              className="rounded-md px-2.5 py-0.5 text-[11px] font-medium leading-normal break-words"
               style={{
-                background: `${color}18`,
-                color,
-                border: `1px solid ${color}30`,
+                background: "var(--bg-card)",
+                color: "var(--text-secondary)",
+                border: "1px solid var(--border-primary)",
               }}
             >
               {skill}
