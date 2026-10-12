@@ -159,8 +159,8 @@ export function SocietyPostCard({
           background: "var(--bg-card)",
           border: "1px solid var(--border-primary)",
           borderRadius: "var(--radius-xl)",
-          padding: 18,
-          marginBottom: 14,
+          padding: "16px 18px",
+          marginBottom: 12,
           opacity: deleting ? 0.6 : 1,
         }}
       >

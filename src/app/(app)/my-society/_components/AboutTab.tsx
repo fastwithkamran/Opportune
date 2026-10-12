@@ -112,7 +112,7 @@ export function AboutTab({ society }: { society: Society }) {
           fontSize: 13,
         }}
       >
-        This society hasn’t added any details yet.
+        This page hasn’t added any details yet.
       </div>
     );
   }
@@ -183,7 +183,7 @@ export function AboutTab({ society }: { society: Society }) {
       {hasImages && (
         <section style={cardStyle} aria-labelledby="society-images-heading">
           <h2 id="society-images-heading" style={sectionTitleStyle}>
-            Society images
+            Page images
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {logoSrc && (

@@ -11,8 +11,7 @@ import { NoSocietyState } from "./_components/NoSocietyState";
 import { SocietyHeader } from "./_components/SocietyHeader";
 import Loader from "@/components/Loader";
 import type { Society, Post } from "@/types";
-import { FiFileText, FiInfo, FiLock } from "react-icons/fi";
-import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import { FiFileText, FiInfo } from "react-icons/fi";
 
 const PAGE_SIZE = 10;
 const TABS = [
@@ -29,7 +28,6 @@ export default function MySocietyPage() {
     isSuperAdmin,
     loading: authLoading,
     profileError,
-    loginWithGoogle,
   } = useAuth();
   const societyId = userProfile?.societyId ?? null;
 
@@ -80,7 +78,7 @@ export default function MySocietyPage() {
         if (!active) return;
         console.error("[MySocietyPage] Failed to load society:", error);
         setSociety(null);
-        setSocietyError("Unable to load your society. Please try again.");
+        setSocietyError("Unable to load your page. Please try again.");
         setLoadedSocietyId(societyId);
       });
 
@@ -110,7 +108,7 @@ export default function MySocietyPage() {
           "[MySocietyPage] Failed to subscribe to society posts:",
           error,
         );
-        setPostsError("Unable to load society posts. Please try again.");
+        setPostsError("Unable to load page posts. Please try again.");
         setLoadedPostsSocietyId(societyId);
         setLoadingMore(false);
       },
@@ -130,76 +128,9 @@ export default function MySocietyPage() {
     );
   }
 
-  // Prompt sign-in for unauthenticated visitors
-  if (!user) {
-    return (
-      <main
-        style={{ padding: "var(--page-padding-y) var(--page-padding-x)" }}
-        aria-labelledby="society-heading"
-      >
-        <header className="mb-5 flex items-start justify-between gap-4">
-          <div>
-            <h1
-              id="society-heading"
-              className="mb-1 text-[22px] font-extrabold flex items-center gap-2"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              <HiOutlineBuildingLibrary className="w-6 h-6 text-[var(--primary-400)]" />{" "}
-              Society
-            </h1>
-            <p
-              className="m-0 text-[13px] text-[var(--text-tertiary)]"
-              aria-live="polite"
-            >
-              Sign in to view your society.
-            </p>
-          </div>
-        </header>
-
-        <section
-          aria-label="Society"
-          className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-primary)] bg-[var(--bg-card)]"
-        >
-          <div className="p-10 text-center sm:p-14">
-            <div className="flex justify-center mb-3">
-              <div className="w-12 h-12 rounded-full bg-[var(--bg-input)] flex items-center justify-center text-[var(--text-tertiary)]">
-                <FiLock className="w-6 h-6" />
-              </div>
-            </div>
-            <h2 className="mb-1 text-[15px] font-semibold text-[var(--text-secondary)]">
-              You’re signed out
-            </h2>
-            <p className="mx-auto mb-4 max-w-md text-[13px] text-[var(--text-tertiary)]">
-              Sign in to view updates from your society and manage your
-              community.
-            </p>
-            <button
-              type="button"
-              className="btn btn-primary btn-sm inline-flex"
-              onClick={() =>
-                loginWithGoogle().catch((error: unknown) => {
-                  const code =
-                    typeof error === "object" &&
-                    error !== null &&
-                    "code" in error
-                      ? String((error as { code: unknown }).code)
-                      : "";
-                  if (
-                    code.includes("popup-closed") ||
-                    code.includes("cancelled")
-                  )
-                    return;
-                  console.error("[MySocietyPage] Sign-in failed:", error);
-                  toast.error("Unable to sign in. Please try again.");
-                })
-              }
-            >
-              Sign in
-            </button>
-          </div>
-        </section>
-      </main>
-    );
+  // Guests or users without a page see the creator onboarding card.
+  if (!user || !societyId) {
+    return <NoSocietyState />;
   }
 
   if (profileError) {
@@ -212,8 +143,6 @@ export default function MySocietyPage() {
       </div>
     );
   }
-
-  if (!societyId) return <NoSocietyState />;
 
   if (loadedSocietyId !== societyId) {
     return (
@@ -325,7 +254,7 @@ export default function MySocietyPage() {
       <p style={{ fontSize: 13 }}>
         {isAdmin
           ? "Use the composer above to publish your first post."
-          : "Posts from this society will appear here."}
+          : "Posts from this page will appear here."}
       </p>
     </div>
   ) : (
@@ -381,7 +310,7 @@ export default function MySocietyPage() {
         <div
           className="flex"
           role="tablist"
-          aria-label="Society sections"
+          aria-label="Page sections"
           onKeyDown={handleTabKeyDown}
         >
           {TABS.map((item) => (
