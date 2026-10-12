@@ -40,6 +40,7 @@ import type {
   Notification,
   Follow,
   CommunityLinks,
+  TeammateListing,
 } from "@/types";
 
 // Firestore allows 500 writes per batch; stay under it.
@@ -906,4 +907,65 @@ export async function markAllNotificationsRead(userId: string): Promise<void> {
 
     if (snap.size < BATCH_LIMIT) return;
   }
+}
+
+// ─── Teammate Listings ────────────────────────────────────────────────────────
+// Doc ID = userId; at most one active listing per user.
+// Listings expire client-side via expiresAt — no cloud function required.
+
+const TEAMMATES_EXPIRY_DAYS = 14;
+
+export type TeammateListingInput = Omit<
+  TeammateListing,
+  "id" | "createdAt" | "expiresAt"
+>;
+
+/** Create or overwrite the current user's teammate listing. */
+export async function upsertTeammateListing(
+  uid: string,
+  data: TeammateListingInput,
+): Promise<void> {
+  const now = new Date();
+  const expiresAt = new Date(
+    now.getTime() + TEAMMATES_EXPIRY_DAYS * 24 * 60 * 60 * 1000,
+  );
+  await setDoc(doc(db, "teammates", uid), {
+    ...stripUndefined(data),
+    createdAt: serverTimestamp(),
+    expiresAt,
+  });
+}
+
+/** Remove the current user's teammate listing. */
+export async function deleteTeammateListing(uid: string): Promise<void> {
+  await deleteDoc(doc(db, "teammates", uid));
+}
+
+/** Fetch a single listing by uid (returns null if not found or expired). */
+export async function getTeammateListing(
+  uid: string,
+): Promise<TeammateListing | null> {
+  const snap = await getDoc(doc(db, "teammates", uid));
+  if (!snap.exists()) return null;
+  const listing = fromDoc<TeammateListing>(snap);
+  if (listing.expiresAt < new Date()) return null;
+  return listing;
+}
+
+/** Realtime subscription to all non-expired teammate listings. */
+export function subscribeToTeammates(
+  callback: (listings: TeammateListing[]) => void,
+  onError?: (error: Error) => void,
+): Unsubscribe {
+  const q = query(
+    collection(db, "teammates"),
+    where("expiresAt", ">", new Date()),
+    orderBy("expiresAt", "desc"),
+  );
+  return onSnapshot(
+    q,
+    (snap) =>
+      callback(snap.docs.map((d) => fromDoc<TeammateListing>(d))),
+    onError,
+  );
 }

@@ -132,3 +132,23 @@ export interface AIMessage {
   content: string;
   timestamp: Date;
 }
+
+// ─── Teammate Listings ────────────────────────────────────────────────────────
+// One document per user (doc id == uid). Automatically expires after 14 days.
+
+export interface TeammateListing {
+  id: string;
+  userId: string;
+  name: string;
+  avatarUrl: string | null;
+  email: string;
+  university: string;
+  bio: string;
+  /** Required: LinkedIn URL or contact method visible to other users. */
+  contactInfo: string;
+  hackathonName: string;
+  hackathonLink: string;
+  createdAt: Date;
+  /** createdAt + 14 days — listings older than this are treated as expired. */
+  expiresAt: Date;
+}

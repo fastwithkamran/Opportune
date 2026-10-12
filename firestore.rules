@@ -225,6 +225,26 @@ service cloud.firestore {
       allow delete: if isAuth() && (isOwner(resource.data.userId) || isSuperAdmin());
     }
 
+    // ─── Teammate Listings ─────────────────────────────────────────────────────
+    // Doc ID == userId. One active listing per user; expires after 14 days.
+
+    match /teammates/{userId} {
+      allow read: if true;
+      allow create: if isAuth()
+        && isOwner(userId)
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.email is string
+        && request.resource.data.name is string
+        && request.resource.data.hackathonName is string
+        && request.resource.data.hackathonLink is string
+        && request.resource.data.contactInfo is string
+        && request.resource.data.createdAt == request.time;
+      allow update: if isAuth()
+        && (isOwner(userId) || isSuperAdmin())
+        && request.resource.data.userId == resource.data.userId;
+      allow delete: if isAuth() && (isOwner(userId) || isSuperAdmin());
+    }
+
     // ─── Server-only collections ───────────────────────────────────────────────
     // /api/ai rate-limit counters. Written via the Admin SDK (bypasses rules).
 
