@@ -7,14 +7,7 @@ import type { Post } from "@/types";
 
 /**
  * Shared optimistic-like logic for PostCard and SocietyPostCard.
- *
- * The two cards used to implement this separately and had drifted apart:
- * SocietyPostCard had no optimistic update, no sign-in message and disabled
- * the button for signed-out users (a disabled button can't show its tooltip
- * on touch or keyboard, so people just saw a dead button).
- *
- * The optimistic override is dropped only when the *server* value changes, so
- * the old state never flashes back while the snapshot listener catches up.
+ * Manages instant local toggling, sign-in toasts, and synchronization with server state.
  */
 export function useOptimisticLike(
   post: Pick<Post, "id" | "likedBy" | "likeCount">,

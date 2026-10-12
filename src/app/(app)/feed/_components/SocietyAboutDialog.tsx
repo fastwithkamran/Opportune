@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AboutTab } from "../../my-society/_components/AboutTab";
+import { AboutTab } from "../../my-page/_components/AboutTab";
 import { getSociety } from "@/lib/firestore";
 import type { Society } from "@/types";
 import { FiX } from "react-icons/fi";

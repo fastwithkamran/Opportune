@@ -62,12 +62,12 @@ This is the idea behind Opportune.
 
 - Global opportunity feed with posts and updates
 - Post categories for hackathons, scholarships, internships, announcements, and events
-- Followable societies and organizations
+- Followable pages, societies, and organizations
 - Student profiles and personalization
 - Notifications for new updates and announcements
 - AI-powered assistant for opportunity discovery
-- Admin and super-admin tools to manage communities and content
-- Organization-driven content publishing for events and opportunities
+- Admin and super-admin tools to manage pages and content
+- Organization and page-driven content publishing for events and opportunities
 
 ---
 
@@ -154,7 +154,7 @@ Opportune/
 │   │   │   │   ├── _components/
 │   │   │   │   │   └── AIMessageContent.tsx
 │   │   │   │   └── page.tsx
-│   │   │   ├── create-society/
+│   │   │   ├── create-page/
 │   │   │   │   ├── _components/
 │   │   │   │   │   ├── ImageUploadField.tsx
 │   │   │   │   │   └── SocietyFormSections.tsx
@@ -165,7 +165,7 @@ Opportune/
 │   │   │   │   │   ├── PostCard.tsx
 │   │   │   │   │   └── SocietyAboutDialog.tsx
 │   │   │   │   └── page.tsx
-│   │   │   ├── my-society/
+│   │   │   ├── my-page/
 │   │   │   │   ├── _components/
 │   │   │   │   │   ├── AboutTab.tsx
 │   │   │   │   │   ├── AttachmentPreview.tsx

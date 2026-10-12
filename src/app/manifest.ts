@@ -92,7 +92,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "My Page",
         short_name: "Page",
         description: "Manage your page posts",
-        url: "/my-society",
+        url: "/my-page",
         icons: [{ src: "/icons/icon-96x96.png", sizes: "96x96" }],
       },
     ],

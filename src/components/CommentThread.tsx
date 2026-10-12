@@ -13,7 +13,7 @@ import { FiSend, FiLoader } from "react-icons/fi";
 const MAX_COMMENT_LENGTH = 100;
 
 /**
- * Shared comment thread — used in both the global feed and the my-society page.
+ * Shared comment thread — used in both the global feed and the page dashboard.
  * Loads comments in real-time and allows the signed-in user to reply.
  */
 export function CommentThread({ postId }: { postId: string }) {

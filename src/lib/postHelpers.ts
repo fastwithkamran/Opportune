@@ -1,6 +1,6 @@
 // ============================================================
 // Opportune — Post Helper Utilities
-// Shared across society feed, global feed, and post cards.
+// Shared across page feed, global feed, and post cards.
 // ============================================================
 
 import type { PostType } from "@/types";

@@ -41,7 +41,7 @@ const initialForm: SocietyFormValues = {
 };
 
 /** sessionStorage key for draft form persistence. */
-const STORAGE_KEY = "opportune:create-society-draft";
+const STORAGE_KEY = "opportune:create-page-draft";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -109,7 +109,7 @@ export default function CreateSocietyPage() {
   }, [form]);
 
   useEffect(() => {
-    if (userProfile?.societyId) router.replace("/my-society");
+    if (userProfile?.societyId) router.replace("/my-page");
   }, [router, userProfile?.societyId]);
 
   // Prevent accidental navigation during active media upload
@@ -286,7 +286,7 @@ export default function CreateSocietyPage() {
     } catch {
       // ignore
     }
-    router.replace("/my-society");
+    router.replace("/my-page");
   };
 
   const handleCancel = () => {

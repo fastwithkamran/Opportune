@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   {
     section: "Community",
     items: [
-      { label: "Pages", href: "/my-society", icon: HiOutlineBuildingLibrary },
+      { label: "Pages", href: "/my-page", icon: HiOutlineBuildingLibrary },
       {
         label: "Updates",
         href: "/updates",
@@ -183,7 +183,7 @@ export default function AdminLayout({
 
   const mobileNavItems = [
     { label: "Feed", href: "/feed", icon: FiGlobe },
-    { label: "Pages", href: "/my-society", icon: HiOutlineBuildingLibrary },
+    { label: "Pages", href: "/my-page", icon: HiOutlineBuildingLibrary },
     { label: "AI", href: "/ai", icon: HiOutlineSparkles },
     {
       label: "Updates",

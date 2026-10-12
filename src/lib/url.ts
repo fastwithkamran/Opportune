@@ -1,8 +1,6 @@
 /**
- * Shared URL helpers. Previously CreateSocietyPage, AboutTab and
- * SocietyPostCard each had their own slightly different copy, and they
- * disagreed (e.g. "example.com:8080" was rejected on save but accepted on
- * display). Keep ONE implementation so what is saved is what is rendered.
+ * Shared URL normalization helpers.
+ * Validates, strips credentials, and ensures http(s) schemes for rendered and persisted links.
  */
 
 /**

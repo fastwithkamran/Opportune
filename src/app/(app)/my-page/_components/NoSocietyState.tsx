@@ -175,7 +175,7 @@ export function NoSocietyState({
         {/* CTA */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Link
-            href="/create-society"
+            href="/create-page"
             className="btn btn-primary inline-flex items-center gap-2"
             style={{ fontSize: 13 }}
           >
