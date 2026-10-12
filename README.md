@@ -62,6 +62,7 @@ This is the idea behind Opportune.
 
 - Global opportunity feed with posts and updates
 - Post categories for hackathons, scholarships, internships, announcements, and events
+- Hackathon teammate finder with auto-expiring listings and direct contact
 - Followable pages, societies, and organizations
 - Student profiles and personalization
 - Notifications for new updates and announcements
@@ -173,6 +174,10 @@ Opportune/
 │   │   │   │   │   ├── PostComposer.tsx
 │   │   │   │   │   ├── SocietyHeader.tsx
 │   │   │   │   │   └── SocietyPostCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── teammates/
+│   │   │   │   ├── [id]/
+│   │   │   │   │   └── page.tsx
 │   │   │   │   └── page.tsx
 │   │   │   ├── updates/
 │   │   │   │   └── page.tsx
