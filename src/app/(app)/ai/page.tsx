@@ -93,7 +93,7 @@ export default function AIPage() {
     {
       id: "welcome",
       role: "assistant",
-      content: `Hi! I'm Opportune's AI Assistant, powered by Gemini 🇵🇰\n\nI help Pakistani (and global) students discover **hackathons**, **scholarships**, **internships**, and **competitions** — so you never miss an opportunity again.\n\nWhat are you looking for today?`,
+      content: `Hi! I'm Opportune's AI Assistant \n\nI help Pakistani (and global) students discover **hackathons**, **scholarships**, **internships**, and **competitions** — so you never miss an opportunity again.\n\nWhat are you looking for today?`,
       timestamp: new Date(),
     },
   ]);
@@ -307,17 +307,40 @@ export default function AIPage() {
           className="flex items-center gap-2"
           style={{
             fontFamily: "var(--font-heading)",
-            fontSize: 22,
+            fontSize: 16,
             fontWeight: 800,
             marginBottom: 4,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            lineHeight: 1.15,
           }}
         >
-          <HiOutlineSparkles className="text-[var(--primary-400)]" /> AI
-          Assistant
+          <HiOutlineSparkles
+            style={{
+              width: 18,
+              height: 18,
+              color: "var(--primary-400)",
+              flexShrink: 0,
+            }}
+          />
+          <span>
+            <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
+              Leave the past.{" "}
+            </span>
+            <span
+              style={{
+                background: "var(--gradient-text, var(--gradient-primary))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontWeight: 700,
+              }}
+            >
+              AI does it!
+            </span>
+          </span>
         </h1>
-        <p style={{ color: "var(--text-tertiary)", fontSize: 13 }}>
-          Powered by Google Gemini
-        </p>
       </div>
 
       {/* Quick prompts */}
@@ -383,9 +406,6 @@ export default function AIPage() {
             }}
           >
             Opportune AI
-          </span>
-          <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
-            • Gemini 3.1 Flash Lite
           </span>
         </div>
 
