@@ -71,7 +71,7 @@ function AboutOpportuneCard() {
           <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>
             Why Opportune?
           </strong>{" "}
-          Sifting through 40 unread WhatsApp groups, getting lost in endless
+          Sifting through WhatsApp groups, getting lost in endless
           Instagram scrolls, or digging through buried university emails and
           LinkedIn feeds is exhausting. Students miss deadlines that could
           change their careers. At the same time, student communities, clubs and
