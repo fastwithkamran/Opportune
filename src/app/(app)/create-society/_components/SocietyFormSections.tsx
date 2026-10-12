@@ -226,10 +226,10 @@ export function BasicInformationFields({
       <div style={fieldGap}>
         <TextField
           id={fieldId("name")}
-          label="Society Name"
+          label="Page Name"
           required
           maxLength={LIMITS.name}
-          placeholder="e.g. FAST Computing Society"
+          placeholder="e.g. FAST Computing Society, Allied Bank, MLSA"
           value={form.name}
           error={errors.name}
           onChange={(value) => onChange("name", value)}
@@ -287,7 +287,7 @@ export function BasicInformationFields({
           style={{ resize: "vertical" }}
           rows={4}
           maxLength={LIMITS.description}
-          placeholder="What does your society do? Who is it for?"
+          placeholder="What does your community or organization do? Who is it for?"
           value={form.description}
           aria-required="true"
           aria-invalid={errors.description ? true : undefined}

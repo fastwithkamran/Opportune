@@ -40,6 +40,9 @@ const initialForm: SocietyFormValues = {
   },
 };
 
+/** sessionStorage key for draft form persistence. */
+const STORAGE_KEY = "opportune:create-society-draft";
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const safeFileName = (name: string) =>
@@ -54,7 +57,6 @@ const pageStyle: React.CSSProperties = {
   padding: "var(--page-padding-y) var(--page-padding-x)",
   maxWidth: 700,
   width: "100%",
-  margin: "0 auto",
 };
 
 const titleStyle: React.CSSProperties = {
@@ -79,9 +81,32 @@ export default function CreateSocietyPage() {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   // State updates are async, so two fast clicks could both pass `saving`.
   // A ref blocks the second submit synchronously (prevents duplicate societies).
   const submittingRef = useRef(false);
+
+  // ── Load draft from sessionStorage on mount ───────────────────────────────
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<SocietyFormValues>;
+        queueMicrotask(() => setForm((prev) => ({ ...prev, ...parsed })));
+      }
+    } catch {
+      // sessionStorage unavailable or JSON invalid — silent fail
+    }
+  }, []);
+
+  // ── Persist draft to sessionStorage on every form change ─────────────────
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+    } catch {
+      // Storage quota exceeded or unavailable — silent fail
+    }
+  }, [form]);
 
   useEffect(() => {
     if (userProfile?.societyId) router.replace("/my-society");
@@ -121,7 +146,7 @@ export default function CreateSocietyPage() {
     const name = form.name.trim();
     const description = form.description.trim();
 
-    if (!name) next.name = "Society name is required.";
+    if (!name) next.name = "Page name is required.";
     else if (name.length < 3) next.name = "Use at least 3 characters.";
     if (!form.city.trim()) next.city = "City is required.";
     if (!form.country.trim()) next.country = "Country is required.";
@@ -130,7 +155,7 @@ export default function CreateSocietyPage() {
       next.description = "Tell people a little more (at least 20 characters).";
 
     if (form.website.trim() && normalizeHttpUrl(form.website) === null)
-      next.website = "Enter a valid http(s) link, e.g. https://yoursociety.com";
+      next.website = "Enter a valid http(s) link, e.g. https://yourpage.com";
     if (
       form.contactEmail.trim() &&
       !EMAIL_PATTERN.test(form.contactEmail.trim())
@@ -147,17 +172,21 @@ export default function CreateSocietyPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submittingRef.current) return;
-    if (!user || !userProfile) {
-      toast.error("You must be signed in");
-      return;
-    }
 
+    // Validate the form first so the user sees errors even before sign-in.
     const nextErrors = validate();
     setErrors(nextErrors);
     const firstInvalid = Object.keys(nextErrors).find((k) => nextErrors[k]);
     if (firstInvalid) {
       document.getElementById(fieldId(firstInvalid))?.focus();
       toast.error("Please fix the highlighted fields.");
+      return;
+    }
+
+    // If not signed in, show the inline sign-in prompt (form data is safe in
+    // sessionStorage so nothing is lost after they authenticate).
+    if (!user || !userProfile) {
+      setShowSignInPrompt(true);
       return;
     }
 
@@ -235,7 +264,7 @@ export default function CreateSocietyPage() {
       );
     } catch (error) {
       console.error("[CreateSocietyPage] Failed to create society:", error);
-      toast.error("Failed to create society. Please try again.");
+      toast.error("Failed to create page. Please try again.");
       submittingRef.current = false;
       setSaving(false);
       setUploadProgress(0);
@@ -252,6 +281,11 @@ export default function CreateSocietyPage() {
       console.error("[CreateSocietyPage] Profile refresh failed:", error);
     }
     toast.success(`"${form.name.trim()}" is now live!`);
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
     router.replace("/my-society");
   };
 
@@ -261,47 +295,26 @@ export default function CreateSocietyPage() {
   };
 
   const handleSignIn = () => {
-    loginWithGoogle().catch((error: unknown) => {
-      const code =
-        typeof error === "object" && error !== null && "code" in error
-          ? String((error as { code: unknown }).code)
-          : "";
-      if (code.includes("popup-closed") || code.includes("cancelled")) return;
-      console.error("[CreateSocietyPage] Sign-in failed:", error);
-      toast.error("Unable to sign in. Please try again.");
-    });
+    loginWithGoogle()
+      .then(() => {
+        // Signed in — dismiss the prompt so the auto-submit logic can proceed
+        setShowSignInPrompt(false);
+      })
+      .catch((error: unknown) => {
+        const code =
+          typeof error === "object" && error !== null && "code" in error
+            ? String((error as { code: unknown }).code)
+            : "";
+        if (code.includes("popup-closed") || code.includes("cancelled")) return;
+        console.error("[CreateSocietyPage] Sign-in failed:", error);
+        toast.error("Unable to sign in. Please try again.");
+      });
   };
 
   if (loading || userProfile?.societyId) {
     return (
       <div className="flex h-full items-center justify-center text-[var(--text-tertiary)]">
         <Loader />
-      </div>
-    );
-  }
-
-  // Guests used to see the whole form and only learn on submit that they
-  // needed to sign in (after typing everything).
-  if (!user) {
-    return (
-      <div style={pageStyle}>
-        <h1 style={{ ...titleStyle, marginBottom: 8 }}>Create a Society</h1>
-        <p
-          style={{
-            color: "var(--text-tertiary)",
-            fontSize: 13,
-            marginBottom: 16,
-          }}
-        >
-          Sign in to create a society and share opportunities with students.
-        </p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={handleSignIn}
-        >
-          Sign in with Google
-        </button>
       </div>
     );
   }
@@ -318,7 +331,7 @@ export default function CreateSocietyPage() {
     );
   }
 
-  if (!userProfile) {
+  if (user && !userProfile) {
     return (
       <div className="flex h-full items-center justify-center text-[var(--text-tertiary)]">
         <Loader />
@@ -329,11 +342,34 @@ export default function CreateSocietyPage() {
   return (
     <div style={pageStyle}>
       <header style={{ marginBottom: 24 }}>
-        <h1 style={{ ...titleStyle, marginBottom: 4 }}>Create a Society</h1>
+        <h1
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: 22,
+            fontWeight: 800,
+            lineHeight: 1.15,
+            margin: 0,
+            marginBottom: 4,
+          }}
+        >
+          <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
+            Create a{" "}
+          </span>
+          <span
+            style={{
+              background: "var(--gradient-text, var(--gradient-primary))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              fontWeight: 700,
+            }}
+          >
+            Page
+          </span>
+        </h1>
         <p style={{ color: "var(--text-tertiary)", fontSize: 13 }}>
-          Create a community on Opportune to share opportunities, events, and
-          updates. Your society will be public and discoverable in the global
-          feed, and you&apos;ll become its admin.
+          Create a page on Opportune to share opportunities, events, and
+          updates. Your page will be public and discoverable in the global feed.
         </p>
       </header>
 
@@ -391,11 +427,11 @@ export default function CreateSocietyPage() {
             >
               {uploadProgress < 90
                 ? `Uploading images… ${Math.round(uploadProgress)}%`
-                : "Creating society…"}
+                : "Creating page…"}
             </div>
             <div
               role="progressbar"
-              aria-label="Society creation progress"
+              aria-label="Page creation progress"
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={Math.round(uploadProgress)}
@@ -418,33 +454,93 @@ export default function CreateSocietyPage() {
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <button
-            type="button"
-            className="btn btn-outline"
-            onClick={handleCancel}
-            disabled={saving}
+        {/* ── Inline sign-in prompt (shown after validation passes for guests) ── */}
+        {showSignInPrompt ? (
+          <div
+            style={{
+              border: "1px solid var(--border-primary)",
+              borderRadius: "var(--radius-lg)",
+              background: "var(--bg-input)",
+              padding: "20px 20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+            }}
           >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={saving}
-            style={{ minWidth: 160 }}
-          >
-            {saving ? (
-              "Creating…"
-            ) : (
-              <span
-                style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+            <div>
+              <p
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: 15,
+                  fontWeight: 650,
+                  margin: "0 0 4px",
+                  color: "var(--text-primary)",
+                }}
               >
-                <HiOutlineBuildingLibrary style={{ width: 16, height: 16 }} />{" "}
-                Create Society
-              </span>
-            )}
-          </button>
-        </div>
+                Almost there — sign in to publish.
+              </p>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "var(--text-tertiary)",
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
+                Your form is saved. Sign in with Google and we&apos;ll create
+                your page instantly.
+              </p>
+            </div>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={handleSignIn}
+              >
+                Sign in with Google
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => setShowSignInPrompt(false)}
+              >
+                Back to form
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={handleCancel}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={saving}
+              style={{ minWidth: 160 }}
+            >
+              {saving ? (
+                "Creating…"
+              ) : (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <HiOutlineBuildingLibrary style={{ width: 16, height: 16 }} />{" "}
+                  Create Page
+                </span>
+              )}
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
