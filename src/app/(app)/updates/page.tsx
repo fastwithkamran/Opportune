@@ -20,8 +20,6 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiSmartphone,
-  FiMessageCircle,
-  FiExternalLink,
   FiUsers,
 } from "react-icons/fi";
 import {
@@ -30,6 +28,7 @@ import {
   HiOutlineUserGroup,
   HiOutlineBuildingLibrary,
 } from "react-icons/hi2";
+import { FaWhatsapp } from "react-icons/fa6";
 import Image from "next/image";
 
 const NOTIFICATION_LIMIT = 30;
@@ -44,31 +43,6 @@ function getValidDate(value: unknown): Date | null {
 // ─── About Opportune Card ──────────────────────────────────────────────────────
 
 function AboutOpportuneCard() {
-  const [expanded, setExpanded] = useState(false);
-
-  const features = [
-    {
-      icon: HiOutlineBuildingLibrary,
-      title: "Society Publishing",
-      desc: "Verified student societies post hackathons, events, and scholarships directly.",
-    },
-    {
-      icon: HiOutlineUserGroup,
-      title: "Follow & Stay Updated",
-      desc: "Follow societies you care about and get instant alerts when they post.",
-    },
-    {
-      icon: HiOutlineSparkles,
-      title: "AI Assistant",
-      desc: "Ask anything about opportunities, deadlines, or how to prepare — powered by Gemini.",
-    },
-    {
-      icon: HiOutlineLightBulb,
-      title: "One Centralized Feed",
-      desc: "No more missed WhatsApp links or scattered emails — everything in one clean feed.",
-    },
-  ];
-
   return (
     <section
       aria-label="About Opportune"
@@ -80,200 +54,32 @@ function AboutOpportuneCard() {
         marginBottom: 16,
       }}
     >
-      {/* Header */}
       <div
         style={{
-          background:
-            "linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(6,182,212,0.08) 100%)",
-          borderBottom: expanded ? "1px solid var(--border-primary)" : "none",
           padding: "18px 20px",
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 14,
+          borderLeft: "3px solid var(--border-secondary)",
         }}
       >
-        {/* Logo badge */}
-        <div aria-hidden="true">
-          <Image
-            src="/logo_bg.png"
-            alt="Opportune"
-            width={32}
-            height={32}
-            style={{
-              borderRadius: 8,
-              flexShrink: 0,
-              objectFit: "contain",
-            }}
-          />
-        </div>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexWrap: "wrap",
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: 17,
-                fontWeight: 800,
-                color: "var(--text-primary)",
-                margin: 0,
-              }}
-            >
-              What is Opportune?
-            </h2>
-          </div>
-          <p
-            style={{
-              margin: "4px 0 0",
-              fontSize: 13,
-              color: "var(--text-secondary)",
-              lineHeight: 1.5,
-            }}
-          >
-            Pakistan&apos;s student opportunity platform — hackathons,
-            scholarships, internships, and events, all in one place.
-          </p>
-        </div>
-
-        {/* Expand toggle */}
-        <button
-          type="button"
-          aria-expanded={expanded}
-          aria-controls="about-opportune-details"
-          onClick={() => setExpanded((v) => !v)}
+        <p
           style={{
-            background: "var(--bg-input)",
-            border: "1px solid var(--border-primary)",
-            borderRadius: 8,
-            width: 32,
-            height: 32,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
+            fontSize: 13,
             color: "var(--text-secondary)",
-            transition: "all .15s",
+            lineHeight: 1.7,
+            margin: 0,
           }}
-          aria-label={
-            expanded ? "Collapse about section" : "Expand about section"
-          }
         >
-          {expanded ? (
-            <FiChevronUp style={{ width: 15, height: 15 }} />
-          ) : (
-            <FiChevronDown style={{ width: 15, height: 15 }} />
-          )}
-        </button>
+          <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>
+            Why Opportune?
+          </strong>{" "}
+          Sifting through 40 unread WhatsApp groups, getting lost in endless
+          Instagram scrolls, or digging through buried university emails and
+          LinkedIn feeds is exhausting. Students miss deadlines that could
+          change their careers. At the same time, student communities, clubs and
+          companies struggle to reach the right student talent, losing their
+          announcements to algorithmic noise and chat spam. Opportune fixes
+          this: one verified feed, zero noise, zero missed opportunities.
+        </p>
       </div>
-
-      {/* Expanded details */}
-      {expanded && (
-        <div id="about-opportune-details" style={{ padding: "16px 20px 20px" }}>
-          {/* Why it exists */}
-          <div
-            style={{
-              background: "var(--bg-input)",
-              borderRadius: "var(--radius-md)",
-              padding: "12px 14px",
-              marginBottom: 16,
-              borderLeft: "3px solid var(--primary-400)",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 13,
-                color: "var(--text-secondary)",
-                lineHeight: 1.65,
-                margin: 0,
-              }}
-            >
-              <strong style={{ color: "var(--text-primary)" }}>
-                Why Opportune?
-              </strong>{" "}
-              Opportunities in Pakistan&apos;s student ecosystem are scattered
-              across WhatsApp groups, university notice boards, and countless
-              emails. Students miss deadlines. Societies struggle to reach their
-              audience. Opportune fixes this — one verified feed, one platform,
-              zero noise.
-            </p>
-          </div>
-
-          {/* Feature grid */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: 10,
-            }}
-          >
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                style={{
-                  background: "var(--bg-input)",
-                  borderRadius: "var(--radius-md)",
-                  padding: "12px 14px",
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-start",
-                }}
-              >
-                <feature.icon
-                  style={{
-                    width: 18,
-                    height: 18,
-                    color: "var(--primary-400)",
-                    flexShrink: 0,
-                    marginTop: 1,
-                  }}
-                />
-                <div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: "var(--text-primary)",
-                      marginBottom: 2,
-                    }}
-                  >
-                    {feature.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11.5,
-                      color: "var(--text-tertiary)",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {feature.desc}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div
-            style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap" }}
-          >
-            <Link
-              href="/feed"
-              className="btn btn-primary btn-sm"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-            >
-              <FiGlobe style={{ width: 13, height: 13 }} />
-              Browse Opportunities
-            </Link>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
@@ -354,15 +160,6 @@ function QuickChannelsCard() {
         >
           Quick Channels &amp; Preferences
         </h2>
-        <p
-          style={{
-            fontSize: 12,
-            color: "var(--text-tertiary)",
-            margin: "3px 0 0",
-          }}
-        >
-          Stay connected on your favourite platforms
-        </p>
       </div>
 
       {/* Cards grid */}
@@ -393,15 +190,15 @@ function QuickChannelsCard() {
               width: 40,
               height: 40,
               borderRadius: 10,
-              background: "linear-gradient(135deg, #25d366, #128c7e)",
+              border: "1px solid var(--border-primary)",
+              background: "var(--bg-card)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              boxShadow: "0 0 14px rgba(37,211,102,0.3)",
             }}
           >
-            <FiMessageCircle style={{ width: 20, height: 20, color: "#fff" }} />
+            <FaWhatsapp style={{ width: 22, height: 22, color: "#25d366" }} />
           </div>
 
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -433,8 +230,9 @@ function QuickChannelsCard() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 5,
-                background: "linear-gradient(135deg, #25d366, #128c7e)",
-                color: "#fff",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border-primary)",
+                color: "var(--text-primary)",
                 fontSize: 12,
                 fontWeight: 600,
                 padding: "6px 12px",
@@ -443,7 +241,7 @@ function QuickChannelsCard() {
                 transition: "opacity .15s",
               }}
             >
-              <FiExternalLink style={{ width: 11, height: 11 }} />
+              <FaWhatsapp style={{ width: 12, height: 12, color: "#25d366" }} />
               Join Channel
             </a>
           </div>
@@ -457,7 +255,7 @@ function QuickChannelsCard() {
               ? "1px solid rgba(16,185,129,0.35)"
               : "1px solid var(--border-primary)",
             background: pushGranted
-              ? "rgba(16,185,129,0.05)"
+              ? "rgba(16,185,129,0.04)"
               : "var(--bg-input)",
             padding: "14px 16px",
             display: "flex",
@@ -472,22 +270,28 @@ function QuickChannelsCard() {
               width: 40,
               height: 40,
               borderRadius: 10,
-              background: pushGranted
-                ? "var(--gradient-primary)"
-                : "linear-gradient(135deg, #f59e0b, #d97706)",
+              border: pushGranted
+                ? "1px solid rgba(16,185,129,0.3)"
+                : "1px solid var(--border-primary)",
+              background: "var(--bg-card)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              boxShadow: pushGranted
-                ? "0 0 14px rgba(16,185,129,0.3)"
-                : "0 0 14px rgba(245,158,11,0.3)",
             }}
           >
             {pushGranted ? (
-              <FiBell style={{ width: 20, height: 20, color: "#fff" }} />
+              <FiBell
+                style={{
+                  width: 20,
+                  height: 20,
+                  color: "var(--primary-400)",
+                }}
+              />
             ) : (
-              <FiBellOff style={{ width: 20, height: 20, color: "#fff" }} />
+              <FiBellOff
+                style={{ width: 20, height: 20, color: "var(--text-tertiary)" }}
+              />
             )}
           </div>
 
@@ -543,12 +347,12 @@ function QuickChannelsCard() {
               }}
             >
               {pushGranted
-                ? "You'll get instant alerts when societies post new opportunities."
+                ? "You'll get instant alerts when pages post new opportunities."
                 : pushDenied
                   ? "Notifications are blocked. Allow them in your browser site settings."
                   : pushUnsupported
                     ? "Your browser doesn't support push notifications."
-                    : "Get instant alerts when societies you follow post something new."}
+                    : "Get instant alerts when pages you follow post something new."}
             </p>
 
             {!pushGranted && !pushDenied && !pushUnsupported && (
@@ -559,13 +363,13 @@ function QuickChannelsCard() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 5,
-                  background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                  color: "#fff",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border-primary)",
+                  color: "var(--text-primary)",
                   fontSize: 12,
                   fontWeight: 600,
                   padding: "6px 12px",
                   borderRadius: 8,
-                  border: "none",
                   cursor: "pointer",
                   transition: "opacity .15s",
                 }}
@@ -676,15 +480,17 @@ function InstallAppCard() {
           width: 44,
           height: 44,
           borderRadius: 12,
-          background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+          border: "1px solid var(--border-primary)",
+          background: "var(--bg-input)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          boxShadow: "0 0 16px rgba(99,102,241,0.3)",
         }}
       >
-        <FiSmartphone style={{ width: 20, height: 20, color: "#fff" }} />
+        <FiSmartphone
+          style={{ width: 20, height: 20, color: "var(--text-secondary)" }}
+        />
       </div>
 
       {/* Text */}
@@ -735,7 +541,7 @@ function InstallAppCard() {
         >
           {installed
             ? "Opportune is installed on your device. Launch it anytime from your home screen!"
-            : "Install Opportune on your phone or desktop for instant access, offline support, and permanent login."}
+            : "Install Opportune on your phone or desktop. Launch it anytime from your home screen!"}
         </p>
       </div>
 
@@ -1047,7 +853,7 @@ export default function UpdatesPage() {
           You&apos;re signed out
         </h2>
         <p className="mx-auto mb-4 max-w-md text-[13px] text-[var(--text-tertiary)]">
-          Sign in to see updates from the societies you follow.
+          Sign in to see updates from the pages you follow.
         </p>
         <button
           type="button"
@@ -1087,8 +893,7 @@ export default function UpdatesPage() {
           No updates yet
         </h2>
         <p className="mx-auto mb-4 max-w-md text-[13px] text-[var(--text-tertiary)]">
-          Follow societies in the Global Feed to hear when they share a new
-          post.
+          Follow pages in the Global Feed to hear when they share a new post.
         </p>
         <Link
           href="/feed"
@@ -1122,15 +927,25 @@ export default function UpdatesPage() {
       <header className="mb-5">
         <h1
           id="updates-heading"
-          className="mb-1 text-[22px] font-extrabold flex items-center gap-2"
-          style={{ fontFamily: "var(--font-heading)" }}
+          className="mb-1 flex items-center gap-2"
+          style={{ fontFamily: "var(--font-heading)", fontSize: 16, fontWeight: 800, lineHeight: 1.15 }}
         >
-          <FiBell className="w-6 h-6 text-[var(--primary-400)]" />
-          Updates & Hub
+          <FiBell style={{ width: 18, height: 18, color: "var(--primary-400)", flexShrink: 0 }} />
+          <span>
+            <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>Stay ahead. </span>
+            <span
+              style={{
+                background: "var(--gradient-text, var(--gradient-primary))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontWeight: 700,
+              }}
+            >
+              Never miss a beat!
+            </span>
+          </span>
         </h1>
-        <p className="m-0 text-[13px] text-[var(--text-tertiary)]">
-          Platform info, quick actions, and your activity alerts
-        </p>
       </header>
 
       {/* ── Tab Switcher Pill ── */}
