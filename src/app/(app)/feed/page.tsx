@@ -94,6 +94,12 @@ export default function GlobalFeedPage() {
   const [pendingAllCount, setPendingAllCount] = useState(0);
   const [pendingFollowCount, setPendingFollowCount] = useState(0);
 
+  // ── Hide-on-scroll ─────────────────────────────────────────────────────────
+  // The header slides out of view when the user scrolls down and reappears on
+  // scroll-up, giving full viewport focus to posts across all screens.
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
   // ── Global feed subscription (re-subscribes on pageSize change) ──────────────
   useEffect(() => {
     let initialized = true;
@@ -279,9 +285,61 @@ export default function GlobalFeedPage() {
         post.content.toLowerCase().includes(normalizedSearch),
     );
 
+  // Auto-hides header on scroll-down and reveals on scroll-up (RAF throttled).
+  useEffect(() => {
+    let rafId: number | null = null;
+    const container = document.getElementById("main-scroll");
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const scrollEl = container || document.getElementById("main-scroll");
+        const current =
+          (scrollEl ? scrollEl.scrollTop : 0) ||
+          window.scrollY ||
+          document.documentElement.scrollTop ||
+          0;
+        const delta = current - lastScrollY.current;
+
+        // Keep header visible when near the top of the feed
+        if (current <= 40) {
+          setHeaderHidden(false);
+        } else if (delta > 8) {
+          setHeaderHidden(true);
+        } else if (delta < -8) {
+          setHeaderHidden(false);
+        }
+        lastScrollY.current = current;
+      });
+    };
+
+    if (container) {
+      container.addEventListener("scroll", onScroll, { passive: true });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", onScroll);
+      }
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    const container = document.getElementById("main-scroll");
+    if (container) {
+      container.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setHeaderHidden(false);
+  };
+
   return (
     <>
-      {/* ── Header: compact single-row ── */}
+      {/* ── Header: single-row with hide-on-scroll ── */}
       <div
         style={{
           padding: "var(--page-padding-y) var(--page-padding-x) 0",
@@ -290,6 +348,9 @@ export default function GlobalFeedPage() {
           zIndex: 30,
           background: "var(--bg-primary)",
           borderBottom: "1px solid var(--border-secondary)",
+          transform: headerHidden ? "translateY(-110%)" : "translateY(0)",
+          transition: "transform 0.25s ease",
+          willChange: "transform",
         }}
       >
         {/* Title row */}
@@ -314,8 +375,8 @@ export default function GlobalFeedPage() {
           >
             <FiGlobe
               style={{
-                width: 16,
-                height: 16,
+                width: 18,
+                height: 18,
                 color: "var(--primary-400)",
                 flexShrink: 0,
               }}
@@ -323,18 +384,36 @@ export default function GlobalFeedPage() {
             <h1
               style={{
                 fontFamily: "var(--font-heading)",
-                fontSize: 15.5,
-                fontWeight: 650,
-                color: "var(--text-primary)",
+                fontSize: 16,
+                fontWeight: 600,
                 letterSpacing: "-0.01em",
                 margin: 0,
                 lineHeight: 1.25,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
+                display: "flex",
+                alignItems: "baseline",
+                gap: "0.35em",
+                flexShrink: 1,
+                minWidth: 0,
               }}
             >
-              Ditch the noise. Lock in and build your future!
+              <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
+                Ditch the noise.
+              </span>
+              <span
+                style={{
+                  background: "var(--gradient-text, var(--gradient-primary))",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}
+              >
+                Win your future!
+              </span>
             </h1>
             {isSuperAdmin && (
               <span
@@ -413,7 +492,7 @@ export default function GlobalFeedPage() {
             <input
               id="feed-search"
               className="input"
-              placeholder="Search posts or societies…"
+              placeholder="Search posts or pages…"
               value={search}
               autoFocus
               onChange={(event) => setSearch(event.target.value)}
@@ -458,7 +537,10 @@ export default function GlobalFeedPage() {
               key={feedTab}
               type="button"
               aria-pressed={tab === feedTab}
-              onClick={() => setTab(feedTab)}
+              onClick={() => {
+                setTab(feedTab);
+                scrollToTop();
+              }}
               className="feed-tab-button"
               style={{
                 fontWeight: tab === feedTab ? 600 : 450,
@@ -505,7 +587,10 @@ export default function GlobalFeedPage() {
                 const selectedFilter = TYPE_FILTERS.find(
                   ({ value }) => value === event.target.value,
                 );
-                if (selectedFilter) setTypeFilter(selectedFilter.value);
+                if (selectedFilter) {
+                  setTypeFilter(selectedFilter.value);
+                  scrollToTop();
+                }
               }}
               style={{
                 padding: "7px 28px 7px 10px",
@@ -544,7 +629,10 @@ export default function GlobalFeedPage() {
                 key={value}
                 type="button"
                 aria-pressed={active}
-                onClick={() => setTypeFilter(value)}
+                onClick={() => {
+                  setTypeFilter(value);
+                  scrollToTop();
+                }}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -574,11 +662,12 @@ export default function GlobalFeedPage() {
         <div
           style={{
             position: "sticky",
-            top: 8,
+            top: headerHidden ? 12 : 8,
             zIndex: 40,
             display: "flex",
             justifyContent: "center",
             pointerEvents: "none",
+            transition: "top 0.25s ease",
           }}
         >
           <button
@@ -612,7 +701,6 @@ export default function GlobalFeedPage() {
         style={{
           padding: "12px var(--page-padding-x)",
           flex: 1,
-          overflowY: "auto",
         }}
       >
         {tab === "following" && authLoading ? (
@@ -650,7 +738,7 @@ export default function GlobalFeedPage() {
                 fontFamily: "var(--font-heading)",
               }}
             >
-              Sign In to Follow Societies
+              Sign In to Follow Pages
             </div>
             <p
               style={{
@@ -661,8 +749,8 @@ export default function GlobalFeedPage() {
                 lineHeight: 1.7,
               }}
             >
-              Create an account to follow institutes and get a personalised feed
-              of their announcements, events, and opportunities.
+              Create an account to follow pages and get a personalised feed of
+              their announcements, events, and opportunities.
             </p>
             <button
               type="button"
@@ -782,7 +870,10 @@ export default function GlobalFeedPage() {
               <button
                 type="button"
                 className="btn btn-outline btn-sm"
-                onClick={() => setSearch("")}
+                onClick={() => {
+                  setSearch("");
+                  scrollToTop();
+                }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
               >
                 <FiX style={{ width: 14, height: 14 }} /> Clear Search
@@ -791,7 +882,10 @@ export default function GlobalFeedPage() {
               <button
                 type="button"
                 className="btn btn-outline btn-sm"
-                onClick={() => setTypeFilter("all")}
+                onClick={() => {
+                  setTypeFilter("all");
+                  scrollToTop();
+                }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
               >
                 <FiX style={{ width: 14, height: 14 }} /> Show All Types
@@ -800,7 +894,10 @@ export default function GlobalFeedPage() {
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
-                onClick={() => setTab("all")}
+                onClick={() => {
+                  setTab("all");
+                  scrollToTop();
+                }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
               >
                 <FiGlobe style={{ width: 14, height: 14 }} /> Browse All Posts
@@ -809,7 +906,10 @@ export default function GlobalFeedPage() {
               <button
                 type="button"
                 className="btn btn-outline btn-sm"
-                onClick={() => setTab("all")}
+                onClick={() => {
+                  setTab("all");
+                  scrollToTop();
+                }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
               >
                 <FiGlobe style={{ width: 14, height: 14 }} /> Browse All Posts

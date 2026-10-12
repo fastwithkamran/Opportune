@@ -88,7 +88,7 @@ export function PostCard({
 
   const handleFollow = async () => {
     if (!currentUserId) {
-      toast.error("Sign in to follow societies");
+      toast.error("Sign in to follow pages");
       return;
     }
     if (followPending) return;
@@ -154,8 +154,8 @@ export function PostCard({
           background: "var(--bg-card)",
           border: "1px solid var(--border-primary)",
           borderRadius: "var(--radius-xl)",
-          padding: 20,
-          marginBottom: 14,
+          padding: "16px 18px",
+          marginBottom: 12,
           position: "relative",
           scrollMarginTop: 16,
         }}
@@ -238,7 +238,7 @@ export function PostCard({
               <div
                 style={{
                   fontSize: 14,
-                  fontWeight: 700,
+                  fontWeight: 650,
                   color: "var(--text-primary)",
                   fontFamily: "var(--font-heading)",
                   overflow: "hidden",

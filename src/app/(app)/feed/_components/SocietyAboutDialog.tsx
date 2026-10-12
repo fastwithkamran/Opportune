@@ -114,13 +114,13 @@ export function SocietyAboutDialog({
             id="society-dialog-title"
             className="m-0 min-w-0 truncate text-base font-bold text-[var(--text-primary)]"
           >
-            {society?.name ?? "Society information"}
+            {society?.name ?? "Page information"}
           </h2>
           <button
             type="button"
             ref={closeButtonRef}
             onClick={onClose}
-            aria-label="Close society information"
+            aria-label="Close page information"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[var(--border-primary)] text-lg text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
           >
             <FiX className="w-5 h-5" />
@@ -134,7 +134,7 @@ export function SocietyAboutDialog({
               aria-live="polite"
               className="py-12 text-center text-sm text-[var(--text-tertiary)]"
             >
-              Loading society information…
+              Loading page information…
             </div>
           ) : society ? (
             <AboutTab society={society} />
@@ -145,8 +145,8 @@ export function SocietyAboutDialog({
             >
               <p className="mb-4 text-sm text-[var(--text-secondary)]">
                 {error
-                  ? "Could not load this society’s information."
-                  : "This society is no longer available."}
+                  ? "Could not load this page’s information."
+                  : "This page is no longer available."}
               </p>
               {error && (
                 <button
