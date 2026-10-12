@@ -31,7 +31,13 @@ const NAV_ITEMS = [
   {
     section: "Community",
     items: [
-      { label: "Society", href: "/my-society", icon: HiOutlineBuildingLibrary },
+      { label: "Pages", href: "/my-society", icon: HiOutlineBuildingLibrary },
+      {
+        label: "Updates",
+        href: "/updates",
+        icon: FiBell,
+        dynamic: "unread" as const,
+      },
     ],
   },
   {
@@ -41,12 +47,6 @@ const NAV_ITEMS = [
   {
     section: "Account",
     items: [
-      {
-        label: "Updates",
-        href: "/updates",
-        icon: FiBell,
-        dynamic: "unread" as const,
-      },
       { label: "Settings", href: "/settings", icon: FiSettings },
     ],
   },
@@ -55,7 +55,7 @@ const NAV_ITEMS = [
     superAdminSection: true,
     items: [
       {
-        label: "Manage Societies",
+        label: "Manage Pages",
         href: "/super-admin",
         icon: FiLayers,
         superAdminOnly: true,
@@ -183,7 +183,7 @@ export default function AdminLayout({
 
   const mobileNavItems = [
     { label: "Feed", href: "/feed", icon: FiGlobe },
-    { label: "Society", href: "/my-society", icon: HiOutlineBuildingLibrary },
+    { label: "Pages", href: "/my-society", icon: HiOutlineBuildingLibrary },
     { label: "AI", href: "/ai", icon: HiOutlineSparkles },
     {
       label: "Updates",
@@ -211,7 +211,7 @@ export default function AdminLayout({
           padding: "0 16px",
           background: "var(--bg-secondary)",
           borderBottom: "1px solid var(--border-primary)",
-          zIndex: 10,
+          zIndex: 50,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -545,7 +545,7 @@ export default function AdminLayout({
                         <FiZap style={{ width: 12, height: 12 }} /> Super Admin
                       </span>
                     ) : userProfile?.role === "admin" ? (
-                      "Society Admin"
+                      "Page Admin"
                     ) : (
                       "Viewer"
                     )}
@@ -701,6 +701,7 @@ export default function AdminLayout({
 
       <main
         ref={mainRef}
+        id="main-scroll"
         style={{
           flex: 1,
           minHeight: 0,

@@ -384,7 +384,7 @@ export async function createSociety(
   const currentRole =
     (userSnap.data()?.role as string | null | undefined) ?? null;
   if (currentRole !== null && currentRole !== "super_admin") {
-    throw new Error("You already manage a society.");
+    throw new Error("You already manage a page.");
   }
 
   const societyRef = doc(collection(db, "societies"));

@@ -89,9 +89,9 @@ export default function manifest(): MetadataRoute.Manifest {
         icons: [{ src: "/icons/icon-96x96.png", sizes: "96x96" }],
       },
       {
-        name: "My Society",
-        short_name: "Society",
-        description: "Manage your society posts",
+        name: "My Page",
+        short_name: "Page",
+        description: "Manage your page posts",
         url: "/my-society",
         icons: [{ src: "/icons/icon-96x96.png", sizes: "96x96" }],
       },

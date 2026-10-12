@@ -510,7 +510,7 @@ export default function SettingsPage() {
             <label className="input-label">
               Contact Info{" "}
               <span style={{ fontWeight: 400, opacity: 0.6 }}>
-                — optional, visible to society members
+                — optional, visible on your profile
               </span>
             </label>
             <input
