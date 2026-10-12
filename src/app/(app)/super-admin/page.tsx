@@ -85,11 +85,11 @@ export default function SuperAdminPage() {
       setSocieties((current) =>
         current.filter((item) => item.id !== society.id),
       );
-      toast.success(`Society "${society.name}" deleted`);
+      toast.success(`Page "${society.name}" deleted`);
       setConfirmSociety(null);
     } catch (error) {
       console.error("[SuperAdminPage] Failed to delete society:", error);
-      toast.error("Failed to delete society. Please try again.");
+      toast.error("Failed to delete page. Please try again.");
     } finally {
       setDeletingSocietyId(null);
     }
@@ -121,15 +121,14 @@ export default function SuperAdminPage() {
               className="mb-1 flex items-center gap-2 text-[22px] font-extrabold"
               style={{ fontFamily: "var(--font-heading)" }}
             >
-              <FiLayers className="text-[var(--text-secondary)]" /> Manage
-              Societies
+              <FiLayers className="text-[var(--text-secondary)]" /> Manage Pages
             </h1>
             <p className="m-0 flex flex-wrap items-center gap-2 text-[13px] text-[var(--text-tertiary)]">
               {loading
-                ? "Loading societies…"
+                ? "Loading pages…"
                 : loadError
-                  ? "Could not load societies."
-                  : `${societies.length} societies on the platform`}
+                  ? "Could not load pages."
+                  : `${societies.length} pages on the platform`}
               <span className="inline-flex items-center gap-1 rounded-full border border-red-500/25 bg-red-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-red-500">
                 <FiZap className="text-[10px]" /> Super Admin
               </span>
@@ -146,16 +145,16 @@ export default function SuperAdminPage() {
             aria-hidden="true"
           />
           <span>
-            Deletion removes the society, its top-level posts, and follow
-            records. Nested post comments and post attachment files are not
-            currently removed. Society logo and banner cleanup is best-effort.
+            Deletion removes the page, its top-level posts, and follow records.
+            Nested post comments and post attachment files are not currently
+            removed. Page logo and banner cleanup is best-effort.
             <strong className="text-red-500"> This cannot be undone.</strong>
           </span>
         </div>
 
         <div className="mb-4">
           <label className="sr-only" htmlFor="society-search">
-            Search societies
+            Search pages
           </label>
           <input
             id="society-search"
@@ -172,13 +171,12 @@ export default function SuperAdminPage() {
             role="status"
             className="p-10 text-center text-sm text-[var(--text-tertiary)]"
           >
-            Loading societies…
+            Loading pages…
           </div>
         ) : loadError ? (
           <div className="p-10 text-center">
             <p className="mb-4 text-sm text-[var(--text-secondary)]">
-              Societies could not be loaded. Check your connection and try
-              again.
+              Pages could not be loaded. Check your connection and try again.
             </p>
             <button
               type="button"
@@ -200,7 +198,7 @@ export default function SuperAdminPage() {
               <HiOutlineBuildingLibrary />
             </div>
             <h2 className="mb-1 text-[15px] font-semibold text-[var(--text-secondary)]">
-              No societies found
+              No pages found
             </h2>
             {normalizedSearch && (
               <p className="m-0 text-[13px]">Try a different search term.</p>

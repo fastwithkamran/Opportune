@@ -75,7 +75,7 @@ export function ConfirmDeleteModal({
           className="mb-2 text-center text-xl font-extrabold text-[var(--text-primary)]"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Delete Society?
+          Delete Page?
         </h2>
         <p
           id="delete-society-description"
@@ -91,9 +91,9 @@ export function ConfirmDeleteModal({
             This action removes:
           </p>
           <ul className="m-0 list-inside list-disc space-y-1 text-xs text-[var(--text-secondary)]">
-            <li>The society profile</li>
+            <li>The page profile</li>
             <li>Top-level posts and follow records</li>
-            <li>Society logo and banner where Cloudinary cleanup succeeds</li>
+            <li>Page logo and banner where Cloudinary cleanup succeeds</li>
           </ul>
           <p className="mb-0 mt-3 text-xs leading-relaxed text-[var(--text-tertiary)]">
             Nested post comments and attachment files are not deleted by the
@@ -127,7 +127,7 @@ export function ConfirmDeleteModal({
               </>
             ) : (
               <>
-                <FiTrash2 className="text-sm" /> Delete Society
+                <FiTrash2 className="text-sm" /> Delete Page
               </>
             )}
           </button>
