@@ -12,6 +12,7 @@ import React, {
 import {
   User as FirebaseUser,
   onAuthStateChanged,
+  onIdTokenChanged,
   signOut,
   GoogleAuthProvider,
   browserLocalPersistence,
@@ -109,30 +110,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profileError, setProfileError] = useState<Error | null>(null);
   const authStateVersion = useRef(0);
 
+  const userProfileRef = useRef<UserProfile | null>(null);
+  useEffect(() => {
+    userProfileRef.current = userProfile;
+  }, [userProfile]);
+
   // UI convenience only — Firestore rules / server routes must enforce admin access themselves.
   const isSuperAdmin = userProfile?.role === "super_admin";
 
-  // ── Single source of truth for auth state ─────────────────────────────────
+  // ── Auth state listener ──────────────────────────────────────────────────
   useEffect(() => {
     let active = true;
 
-    // Keep students signed in until they sign out. The SDK renews the 1-hour ID
-    // token automatically using the refresh token, so no re-login is needed.
-    // Set on mount (not inside loginWithGoogle) so no await sits between the
-    // click and the sign-in popup, which would get the popup blocked.
+    // Enforce long-lived local persistence on mount so popups are not blocked
     setPersistence(auth, browserLocalPersistence).catch((err) => {
       console.warn("[AuthContext] Could not enable persistent login:", err);
     });
 
-    // Completes a signInWithRedirect fallback (see loginWithGoogle). Success is
-    // picked up by onAuthStateChanged; this only reports failures.
+    // Handle redirect sign-in results; state changes are handled by onIdTokenChanged
     getRedirectResult(auth).catch((err) => {
       if (active) console.error("[AuthContext] Redirect sign-in failed:", err);
     });
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    // onIdTokenChanged preserves persistent login across automatic hourly token refreshes
+    const unsubscribe = onIdTokenChanged(auth, async (firebaseUser) => {
       const version = ++authStateVersion.current;
-      setLoading(true);
       setProfileError(null);
 
       if (!firebaseUser) {
@@ -144,25 +146,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       setUser(firebaseUser);
-      // Keep the existing profile visible while the fresh one loads — avoids
-      // a blank-name flash on page reload / tab re-focus for returning users.
 
+      // Re-fetch profile only when user changes, skipping silent token refreshes
       try {
-        const profile = await ensureUserProfile(firebaseUser);
-        if (!active || version !== authStateVersion.current) return;
-        setUserProfile(profile);
+        if (!userProfileRef.current || userProfileRef.current.uid !== firebaseUser.uid) {
+          const profile = await ensureUserProfile(firebaseUser);
+          if (!active || version !== authStateVersion.current) return;
+          setUserProfile(profile);
+        }
       } catch (err) {
         if (!active || version !== authStateVersion.current) return;
         const error =
           err instanceof Error
             ? err
-            : new Error("Failed to load the user profile");
+            : new Error("Failed to load user profile");
         console.error(
           "[AuthContext] Error during auth state resolution:",
           error,
         );
-        setUserProfile(null);
-        setProfileError(error);
+        if (!userProfileRef.current) {
+          setProfileError(error);
+        }
       } finally {
         if (active && version === authStateVersion.current) {
           setLoading(false);
