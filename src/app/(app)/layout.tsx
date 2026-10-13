@@ -223,10 +223,13 @@ export default function AdminLayout({
             width={32}
             height={32}
             style={{
+              width: "auto",
+              height: "auto",
               borderRadius: 8,
               flexShrink: 0,
               objectFit: "contain",
             }}
+            priority
           />
           <span
             style={{
@@ -341,10 +344,13 @@ export default function AdminLayout({
             width={32}
             height={32}
             style={{
+              width: "auto",
+              height: "auto",
               borderRadius: 8,
               flexShrink: 0,
               objectFit: "contain",
             }}
+            priority
           />
           <span
             style={{
