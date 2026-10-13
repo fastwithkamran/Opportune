@@ -333,16 +333,7 @@ function TeammateItem({
 
   return (
     <li
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 16,
-        padding: "16px 20px",
-        borderBottom: "1px solid var(--border-primary)",
-        transition: "background 0.15s ease",
-      }}
-      className="hover:bg-[var(--bg-input)]"
+      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-4 sm:p-5 border-b border-[var(--border-primary)] transition-colors duration-150 hover:bg-[var(--bg-input)]"
     >
       <div
         style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}
@@ -440,24 +431,11 @@ function TeammateItem({
 
       {/* Actions */}
       <div
-        style={{ display: "flex", gap: 8, flexShrink: 0, alignItems: "center" }}
+        className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-primary)]/40 sm:border-transparent"
       >
         <Link
           href={`/teammates/${listing.id}`}
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            padding: "6px 14px",
-            borderRadius: 8,
-            border: "1px solid var(--border-primary)",
-            background: "var(--bg-card)",
-            color: "var(--text-primary)",
-            textDecoration: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            transition: "all 0.15s ease",
-          }}
-          className="hover:border-[var(--primary-400)] hover:text-[var(--primary-400)]"
+          className="flex-1 sm:flex-initial text-center justify-center text-xs font-semibold py-2 sm:py-1.5 px-3.5 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] inline-flex items-center transition-all duration-150 hover:border-[var(--primary-400)] hover:text-[var(--primary-400)]"
         >
           View Profile
         </Link>
@@ -466,24 +444,10 @@ function TeammateItem({
           target="_blank"
           rel="noopener noreferrer"
           title={`Register for ${listing.hackathonName}`}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            padding: "6px 12px",
-            borderRadius: 8,
-            border: "1px solid var(--border-primary)",
-            background: "var(--bg-card)",
-            color: "var(--text-secondary)",
-            fontSize: 12,
-            fontWeight: 500,
-            textDecoration: "none",
-            transition: "all 0.15s ease",
-          }}
-          className="hover:border-[var(--primary-400)] hover:text-[var(--primary-400)]"
+          className="flex-1 sm:flex-initial text-center justify-center text-xs font-medium py-2 sm:py-1.5 px-3 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-card)] text-[var(--text-secondary)] inline-flex items-center gap-1.5 transition-all duration-150 hover:border-[var(--primary-400)] hover:text-[var(--primary-400)]"
         >
-          <span className="hidden sm:inline">Hackathon</span>
-          <FiExternalLink style={{ width: 13, height: 13 }} />
+          <span>Hackathon</span>
+          <FiExternalLink className="w-3 h-3 shrink-0" />
         </a>
       </div>
     </li>
