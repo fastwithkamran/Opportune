@@ -8,12 +8,9 @@ import { getTeammateListing } from "@/lib/firestore";
 import { normalizeHttpUrl } from "@/lib/url";
 import { sanitizeImageUrl } from "@/lib/utils";
 import type { TeammateListing } from "@/types";
-import {
-  FiArrowLeft,
-  FiMail,
-  FiExternalLink,
-  FiUsers,
-} from "react-icons/fi";
+import { FiArrowLeft, FiMail, FiExternalLink, FiUsers } from "react-icons/fi";
+import { MdOutlineSchool } from "react-icons/md";
+import LottieAnimation from "@/components/Loader";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -63,12 +60,14 @@ export default function TeammateDetailPage() {
     return (
       <div
         style={{
-          padding: "var(--page-padding-y) var(--page-padding-x)",
-          color: "var(--text-tertiary)",
-          fontSize: 13,
+          display: "flex",
+          minHeight: "60vh",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
         }}
       >
-        Loading…
+        <LottieAnimation />
       </div>
     );
   }
@@ -199,7 +198,6 @@ export default function TeammateDetailPage() {
               style={{
                 margin: 0,
                 fontFamily: "var(--font-heading)",
-                fontWeight: 800,
                 fontSize: 18,
                 color: "var(--text-primary)",
               }}
@@ -214,7 +212,16 @@ export default function TeammateDetailPage() {
                   color: "var(--text-secondary)",
                 }}
               >
-                🎓 {listing.university}
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <MdOutlineSchool style={{ width: 15, height: 15 }} />
+                  {listing.university}
+                </span>
               </p>
             )}
           </div>
@@ -287,11 +294,12 @@ export default function TeammateDetailPage() {
               }}
               className="hover:border-[var(--primary-400)]"
             >
-              Hackathon Details <FiExternalLink style={{ width: 13, height: 13 }} />
+              Hackathon Details{" "}
+              <FiExternalLink style={{ width: 13, height: 13 }} />
             </a>
           </div>
 
-          {/* Bio / Skills */}
+          {/* Whom Are We Looking For */}
           {listing.bio && (
             <div>
               <span
@@ -303,7 +311,7 @@ export default function TeammateDetailPage() {
                   letterSpacing: "0.06em",
                 }}
               >
-                About & Expertise
+                Whom Are We Looking For
               </span>
               <p
                 style={{
@@ -360,10 +368,10 @@ export default function TeammateDetailPage() {
             }}
           >
             <FiMail style={{ width: 15, height: 15 }} />
-            Send Email
+            Email To Join The Team
           </a>
 
-          {/* LinkedIn / profile button */}
+          {/* Social / Portfolio button */}
           {contactLink && (
             <a
               href={contactLink}

@@ -254,16 +254,16 @@ function PostListingModal({
             )}
           </div>
 
-          {/* Bio */}
+          {/* Looking for */}
           <div className="input-group">
-            <label className="input-label">What do you bring to a team?</label>
+            <label className="input-label">Who are you looking for?</label>
             <textarea
               className="input"
               rows={3}
               style={{ resize: "vertical" }}
               value={form.bio}
               onChange={(e) => set("bio")(e.target.value)}
-              placeholder="Full-stack React, AI/LLM integration, UI design, rapid prototyping..."
+              placeholder="Full-stack, AI/LLM integration, UI design, Vibe Coder, rapid prototyping..."
             />
           </div>
 
@@ -332,9 +332,7 @@ function TeammateItem({
     .toUpperCase();
 
   return (
-    <li
-      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-4 sm:p-5 border-b border-[var(--border-primary)] transition-colors duration-150 hover:bg-[var(--bg-input)]"
-    >
+    <li className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-4 sm:p-5 border-b border-[var(--border-primary)] transition-colors duration-150 hover:bg-[var(--bg-input)]">
       <div
         style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}
       >
@@ -430,9 +428,7 @@ function TeammateItem({
       </div>
 
       {/* Actions */}
-      <div
-        className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-primary)]/40 sm:border-transparent"
-      >
+      <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[var(--border-primary)]/40 sm:border-transparent">
         <Link
           href={`/teammates/${listing.id}`}
           className="flex-1 sm:flex-initial text-center justify-center text-xs font-semibold py-2 sm:py-1.5 px-3.5 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] inline-flex items-center transition-all duration-150 hover:border-[var(--primary-400)] hover:text-[var(--primary-400)]"
