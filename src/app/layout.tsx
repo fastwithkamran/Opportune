@@ -96,13 +96,13 @@ export const metadata: Metadata = {
     siteName: "Opportune",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/banner.jpg", alt: "Opportune" }],
+    images: [{ url: "/banner.png", alt: "Opportune" }],
   },
   twitter: {
     card: "summary",
     title: "Opportune",
     description: DESCRIPTION,
-    images: ["/banner.jpg"],
+    images: ["/banner.png"],
   },
 };
 
